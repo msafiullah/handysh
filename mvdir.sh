@@ -6,48 +6,20 @@ fnUsage() { echo "usage: ${Prog} source_dir destination_dir" 1>&2; exit 1; }
 
 fnError() { echo "${Prog}: ${1}: ${2}" 1>&2; exit 1; }
 
-fnMvFiles()
-{
-	src_folder=$1
-	dest_folder=$2
-	
-	ls -Ap1 "$src_folder" | grep '^.*[^/]$' | while read -r file ;
-	do
-		mv "${src_folder}/${file}" "${dest_folder}/${file}"
-	done 
-}
-
-fnMvDir()
-{
-	src=$1
-	dest=$2
-	src_basename=$3
-	
-	mkdir -p "${dest}/${src_basename}"
-	fnMvFiles "$src" "${dest}/${src_basename}"
-
-	lsdir -R "$src" | while read -r file ;
-	do
-		file=`trim -f -t "${src}/" "$file"`
-		file=`trim -e -t "/" "$file"`
-		new_dir="${dest}/${src_basename}/${file}"
-		old_dir="${src}/${file}"
-		mkdir -p "$new_dir"
-		fnMvFiles "${old_dir}" "$new_dir"
-		rmdir "$old_dir"
-	done 
-	
-	rmdir "$src"
-}
-
-if [ $# -lt 2 ]
+#check for required arguments
+#============================
+if [  $# -ne 2 ]
 then
 	fnUsage
 fi
 
+#get arguments
+#=============
 Src=$1
 Dest=$2
 
+#validate arguments
+#==================
 if [ ! -e "$Src" ]
 then
 	fnError "$Src" "No such file or directory"
@@ -68,16 +40,73 @@ then
 	fnError "$Dest" "Not a directory"
 fi
 
-Src_basename=`basename "$src"`
-Dest_path="${Dest}/${Src_basename}"
-if [ -e $Dest_path ]
+#declare script specific functions
+#=================================
+fnMvFiles()
+{
+	src_folder=$1
+	dest_folder=$2
+	
+	ls -Ap1 "$src_folder" | grep '^.*[^/]$' | while read -r file ;
+	do
+		echo "mv \"${src_folder}/${file}\" \"${dest_folder}/${file}\""
+	done 
+}
+
+fnMvDir()
+{
+	src=$1
+	dest=$2
+	src_basename=$3
+	
+	echo "mkdir -p \"${dest}/${src_basename}\""
+	fnMvFiles "$src" "${dest}/${src_basename}"
+
+	lsdir -AR "$src" | while read -r file ;
+	do
+		file=`trim -f -t "${src}/" "$file"`
+		file=`trim -e -t "/" "$file"`
+		new_dir="${dest}/${src_basename}/${file}"
+		old_dir="${src}/${file}"
+		echo "mkdir -p \"$new_dir\""
+		fnMvFiles "${old_dir}" "$new_dir"
+		echo "rmdir \"$old_dir\""
+	done 
+	
+	echo "rmdir \"$src\""
+}
+
+#start processing arguments
+#==========================
+SrcBasename=`basename "$Src"`
+DestPath="${Dest}/${SrcBasename}"
+
+if [ -e "$DestPath" ]
 then
-	fnMvDir "$Src" "$Dest" "tmp"
-	#rm -rf $Dest
-	src_dirname=`dirname "$Src"`
-	mv  "${src_dirname}/tmp" "$Dest_path"
+	#folder with same name already exists
+	
+	#check if the existing folder has any items
+	num_items=`ls -A1 "$DestPath" | wc -l`
+	
+	if [ $num_items -gt 0 ]
+	then
+		#ask for confirmation for overwriting
+		read -p "${Prog}: destination \"${DestPath}\" is not empty. overwrite [y/n]? " -n 1 -r
+		echo	#move to next line
+		if [[ ! $REPLY =~ ^[Yy]$ ]]
+		then
+   		 	exit 1
+		fi
+	fi
+	
+	#move to tmp hidden folder first
+	tmp=".${SrcBasename}"
+	fnMvDir "$Src" "$Dest" "$tmp"
+	#overwrite folder
+	echo "rm -rf \"${DestPath}\""
+	echo "mv \"${Dest}/${tmp}\"" "\"$DestPath\""
 else
-	fnMvDir "$Src" "$Dest" "$Src_basename"
+	fnMvDir "$Src" "$Dest" "$SrcBasename"
 fi
 
 exit 0
