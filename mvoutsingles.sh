@@ -31,16 +31,17 @@ do
 	#check if there is only one item in the directory
 	if [ $(wcdir "$arg") -eq 1 ]
 		then
-			filename=`echo "${arg%/}"/*`
+			file=`echo "${arg%/}"/*`
+			file_name=`basename "$file"`
 			parent_dir=`dirname "$arg"`
-			echo "moveout ${filename}"
-			echo "moveinto ${parent_dir}" 
+			echo "moveout \"${file_name}\" from \"${file}\""
+			echo "move    \"${file_name}\" into \"${parent_dir}\"" 
 			
-			if [ -d $filename ]
+			if [ -d $file ]
 				then
-					mvdir.sh "$filename" "$parent_dir"
+					mvdir.sh "$file" "$parent_dir"
 				else
-					echo "mv -f \"$filename\" \"$parent_dir\""
+					echo "mv -f \"$file\" \"$parent_dir\""
 			fi
 	fi
 	
