@@ -1,0 +1,76 @@
+#!/bin/sh
+
+Prog=`basename $0`
+
+fnUsage() { echo "usage: ${Prog} [-s] dir ..." 1>&2; exit 1; }
+
+fnError() { echo "${Prog}: ${1}: ${2}" 1>&2; }
+
+while getopts "s" opt; do
+    case "${opt}" in
+        s)
+            s="short"
+            ;;
+        *)
+            fnUsage
+            ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+if [ $# -eq 1 ]
+	then
+		s="short"
+fi
+
+fnWcDir()
+{
+	dir=$1
+	
+	if [ ! -e "$dir" ]
+	then
+		fnError "$dir" "No such file or directory"
+		return 1
+	fi
+	
+	if [ ! -d "$dir" ]
+	then
+		fnError "$dir" "Not a directory"
+		return 1
+	fi
+		
+	count=`ls -1 "$dir" | wc -l`
+	count=${count// }
+	count=${count%% }
+	if [ $s ]
+		then
+			echo $count
+		else
+			printf "%8s\t%s\n" $count $dir
+	fi
+}
+
+if [ -t 0 ] || [ $# -gt 0 ]
+then
+	#read from args
+	
+	if [ $# -eq 0 ]
+	then
+		fnUsage
+	fi
+	
+    for arg in "$@"
+	do
+		fnWcDir "$arg"
+	done
+else
+	echo test3 $# $@
+	#read from stdin
+    while read -r line ; do
+        fnWcDir "$line"
+    done
+fi
+
+
+exit 0

@@ -1,0 +1,63 @@
+#!/bin/sh
+
+Prog=`basename $0`
+
+fnUsage() { echo "usage: ${Prog} [-qR] [dir]" 1>&2; exit 1; }
+
+while getopts ":0qR" opt "${dirs[@]}"; do
+  case $opt in
+  	0)
+  		null_terminate="true"
+  		;;
+    q)
+      q="quote"
+      ;;
+    R)
+      R="fnRecursive"
+      ;;
+    *)
+      fnUsage
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+dir="."
+if [ "$1" ]
+	then
+		dir="$1"
+fi
+
+fnRecursive() { ls -pR1 "$dir" | grep '^.*:$' | sed 's/\(^.*\):$/\1\//'; }
+fnNonRecursive() { ls -p1 "$dir" | grep '^.*/$' | sed 's/^.*$/&/'; }
+
+fnLsDir() {
+if [ $R ] 
+	then
+		fnRecursive
+	else
+		fnNonRecursive
+fi
+}
+
+if [ $q ]
+	then
+		result=`fnLsDir | sed 's/^.*$/"&"/'`
+	else
+		result=`fnLsDir`
+fi
+
+if [ ! "$result" ]
+then
+	exit 0
+fi
+
+if [ $null_terminate ]
+	then
+		printf "%s\0" "$result"
+	else
+		printf "%s\n" "$result"
+fi
+
+exit 0
