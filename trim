@@ -1,0 +1,102 @@
+#!/bin/bash
+
+Prog=`basename $0`
+
+fnUsage() { echo "usage: ${Prog} [-f|-e|-b] -t target string ..." 1>&2; exit 1; }
+
+fnError() { echo "${Prog}: ${1}: ${2}" 1>&2; }
+
+#get options
+#===========
+while getopts ":febt:" opt; do
+    case "${opt}" in
+        f|e)
+            Which_End="${opt}"
+            ;;
+        t)
+        	Target="$OPTARG"
+        	;;
+        :)
+        	fnError "-${OPTARG}" "requires additional arguments"
+        	fnUsage
+        	;;
+        \?)
+        	fnError "$OPTARG" "illegal option"
+            fnUsage
+            ;;
+    esac
+done
+
+#check for required options
+#==========================
+if [ -z $Target ]
+then
+	fnError "-t" "required option"
+	fnUsage
+fi
+
+#shift position to arguments
+#===========================
+shift $((OPTIND-1))
+
+#declare script specific functions
+#=================================
+fnTrimFront()
+{
+	str=$1
+	
+	echo "${str#${Target}}"
+}
+
+fnTrimEnd()
+{
+	str=$1
+	
+	echo "${str%${Target}}"
+}
+
+fnTrim()
+{
+	str=$1
+	
+	case "${Which_End}" in
+		f)
+			fnTrimFront "$str"
+			;;
+		e)
+			fnTrimEnd "$str"
+			;;
+		*)
+			str=`fnTrimFront "$str"`
+			str=`fnTrimEnd "$str"`
+			echo "$str"
+			;;
+	esac
+}
+
+#start processing arguments
+#==========================
+if [ -t 0 ] || [ $# -gt 0 ]
+then
+	#read from arguments
+	
+	#check for required arguments
+	if [ $# -eq 0 ]
+	then
+		fnUsage
+	fi
+	
+    for arg in "$@"
+	do
+		fnTrim "$arg"
+	done
+else
+	#read from stdin
+	
+    while read -r line ; do
+        fnTrim "$line"
+    done
+fi
+
+
+exit 0
