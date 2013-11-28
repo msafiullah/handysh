@@ -15,7 +15,7 @@ fnMvDir()
 {
 	src=$1
 	dest=$2
-	src_basename=`basename "$src"`
+	src_basename=$3
 	
 	echo "mkdir -p \"${dest}/${src_basename}\""
 	fnMvFiles "$src" "${dest}/${src_basename}"
@@ -34,6 +34,23 @@ fnMvDir()
 	echo "rmdir \"$src\""
 }
 
-fnMvDir $1 $2
+Src=$1
+Dest=$2
+SrcBasename=`basename "$Src"`
+DestPath="${Dest}/${SrcBasename}"
+
+if [ -e $DestPath ]
+then
+	#folder with same name already exists
+	#move to tmp folder first
+	fnMvDir "$Src" "$Dest" "tmp"
+	#overwrite folder
+	echo "rm -rf \"${DestPath}\""
+	echo "mv \"${Dest}/tmp\"" "\"$DestPath\""
+else
+	fnMvDir "$Src" "$Dest" "$SrcBasename"
+fi
 
 exit 0
+
+
