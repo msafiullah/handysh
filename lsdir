@@ -2,19 +2,22 @@
 
 Prog=`basename $0`
 
-fnUsage() { echo "usage: ${Prog} [-qR] [dir]" 1>&2; exit 1; }
+fnUsage() { echo "usage: ${Prog} [-0qRA] [dir]" 1>&2; exit 1; }
 
-while getopts ":0qR" opt "${dirs[@]}"; do
+while getopts ":0qRA" opt; do
   case $opt in
   	0)
-  		null_terminate="true"
+  		NullTerminate="true"
   		;;
     q)
-      q="quote"
-      ;;
+      	Quote="true"
+      	;;
     R)
-      R="fnRecursive"
-      ;;
+      	Recursive="true"
+      	;;
+    A)
+    	A="A"
+    	;;
     *)
       fnUsage
       ;;
@@ -23,41 +26,43 @@ done
 
 shift $((OPTIND-1))
 
-dir="."
+Dir="."
 if [ "$1" ]
 	then
-		dir="$1"
+		Dir="$1"
 fi
 
-fnRecursive() { ls -pR1 "$dir" | grep '^.*:$' | sed 's/\(^.*\):$/\1\//'; }
-fnNonRecursive() { ls -p1 "$dir" | grep '^.*/$' | sed 's/^.*$/&/'; }
+fnLsDirRecursive() { ls -pR1${A} "$Dir" | grep '^.*:$' | sed 's/\(^.*\):$/\1\//'; }
 
-fnLsDir() {
-if [ $R ] 
+fnLsDirNonRecursive() { ls -p1${A} "$Dir" | grep '^.*/$' | sed 's/^.*$/&/'; }
+
+fnLsDir()
+{
+if [ $Recursive ] 
 	then
-		fnRecursive
+		fnLsDirRecursive
 	else
-		fnNonRecursive
+		fnLsDirNonRecursive
 fi
 }
 
-if [ $q ]
+if [ $Quote ]
 	then
-		result=`fnLsDir | sed 's/^.*$/"&"/'`
+		Result=`fnLsDir | sed 's/^.*$/"&"/'`
 	else
-		result=`fnLsDir`
+		Result=`fnLsDir`
 fi
 
-if [ ! "$result" ]
+if [ ! "$Result" ]
 then
 	exit 0
 fi
 
-if [ $null_terminate ]
+if [ $NullTerminate ]
 	then
-		printf "%s\0" "$result"
+		printf "%s\0" "$Result"
 	else
-		printf "%s\n" "$result"
+		printf "%s\n" "$Result"
 fi
 
 exit 0
