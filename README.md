@@ -10,6 +10,11 @@ Initially, these shell scripts were written for my own use. In order to make the
 
 Please help to extend the functionalitites and performance of these scripts, add more handy scripts.
 
+Note
+====
+
+Scripts with the .sh extention are for testing purposes and are not production ready. They may inflict some serious damage. Use them with caution.
+
 Installation
 ============
 
