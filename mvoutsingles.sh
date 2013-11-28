@@ -1,15 +1,17 @@
-#!/bin/bash
+#!/bin/sh
 
-usage() { echo "Usage: $0 dir" 1>&2; exit 1; }
+Prog=`basename $0`
+
+fnUsage() { echo "usage: ${Prog} dir ..." 1>&2; exit 1; }
 
 if [ $# -eq 0 ]
 	then
-		usage
+		fnUsage
 fi
 
 for arg in "$@"
-	do
-	if [ -e "$arg" ] && [ $(dircount "$arg") -eq 1 ]
+do
+	if [ -e "$arg" ] && [ $(wcdir "$arg") -eq 1 ]
 		then
 			echo "moveout " `echo $arg`
 			file=`echo "${arg%/}"/*`
