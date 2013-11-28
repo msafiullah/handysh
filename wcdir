@@ -2,12 +2,15 @@
 
 Prog=`basename $0`
 
-fnUsage() { echo "usage: ${Prog} [-s] dir ..." 1>&2; exit 1; }
+fnUsage() { echo "usage: ${Prog} [-As] dir ..." 1>&2; exit 1; }
 
 fnError() { echo "${Prog}: ${1}: ${2}" 1>&2; }
 
-while getopts "s" opt; do
+while getopts ":As" opt; do
     case "${opt}" in
+    	A)
+    		A="A"
+    		;;
         s)
             Shorten="true"
             ;;
@@ -40,7 +43,7 @@ fnWcDir()
 		return 1
 	fi
 		
-	count=`ls -1 "$dir" | wc -l`
+	count=`ls -${A}1 "$dir" | wc -l`
 	count=${count// }
 	count=${count%% }
 	
