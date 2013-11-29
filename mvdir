@@ -49,7 +49,7 @@ fnMvFiles()
 	
 	ls -Ap1 "$src_folder" | grep '^.*[^/]$' | while read -r file ;
 	do
-		echo "mv \"${src_folder}/${file}\" \"${dest_folder}/${file}\""
+		mv "${src_folder}/${file}" "${dest_folder}/${file}"
 	done 
 }
 
@@ -59,7 +59,7 @@ fnMvDir()
 	dest=$2
 	src_basename=$3
 	
-	echo "mkdir -p \"${dest}/${src_basename}\""
+	mkdir -p "${dest}/${src_basename}"
 	fnMvFiles "$src" "${dest}/${src_basename}"
 
 	lsdir -AR "$src" | while read -r file ;
@@ -68,12 +68,13 @@ fnMvDir()
 		file=`trim -e -t "/" "$file"`
 		new_dir="${dest}/${src_basename}/${file}"
 		old_dir="${src}/${file}"
-		echo "mkdir -p \"$new_dir\""
+		mkdir -p "$new_dir"
 		fnMvFiles "${old_dir}" "$new_dir"
-		echo "rmdir \"$old_dir\""
+		rmdir "$old_dir" &> /dev/null 
 	done 
 	
-	echo "rmdir \"$src\""
+	lsdir -qRA "$src" | xargs rmdir 
+	rmdir "$src"
 }
 
 #start processing arguments
@@ -103,8 +104,9 @@ then
 	tmp=".${SrcBasename}"
 	fnMvDir "$Src" "$Dest" "$tmp"
 	#overwrite folder
-	echo "rm -rf \"${DestPath}\""
-	echo "mv \"${Dest}/${tmp}\"" "\"$DestPath\""
+	#echo "rm -rf \"${DestPath}\""
+	mv "${DestPath}" "$HOME/.trash"
+	mv "${Dest}/${tmp}" "$DestPath"
 else
 	fnMvDir "$Src" "$Dest" "$SrcBasename"
 fi
