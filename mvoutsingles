@@ -14,6 +14,7 @@ fi
 for arg in "$@"
 do
 
+	arg=`echo "$arg"`
 	#validate arguments
 	#==================
 	if [ ! -e "$arg" ]
@@ -37,11 +38,11 @@ do
 			echo "moveout \"${file_name}\" from \"${file}\""
 			echo "move    \"${file_name}\" into \"${parent_dir}\"" 
 			
-			if [ -d $file ]
+			if [ -d "$file" ]
 				then
-					mvdir.sh "$file" "$parent_dir"
+					mvdir "$file" "$parent_dir"
 				else
-					echo "mv -f \"$file\" \"$parent_dir\""
+					mv -f "$file" "$parent_dir"
 			fi
 	fi
 	
