@@ -35,9 +35,10 @@ do
 			file=`echo "${arg%/}"/*`
 			file_name=`basename "$file"`
 			parent_dir=`dirname "$arg"`
-			echo "moveout \"${file_name}\" from \"${file}\""
-			echo "move    \"${file_name}\" into \"${parent_dir}\"" 
 			
+			printf "MOVEOUT \e[0;32m%s\e[0m FROM \e[0;32m%s\e[0m INTO \e[0;36m%s\e[0m\n" "${file_name}" "${file}" "${parent_dir}"
+			echo
+							
 			if [ -d "$file" ]
 				then
 					mvdir "$file" "$parent_dir"
