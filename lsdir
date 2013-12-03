@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# List directories in current directory or the given directory.
+# usage: lsdir [-0AqR] [dir]
+# -0	the list of directories is null terminated
+# -A	list all directories including hidden ones; something like ls -A
+# -q	listed directories are enclosed with double quotes; e.g. "directory name"
+# -R	list directories recursively; something like ls -R
+
 Prog=`basename $0`
 
 fnUsage() { echo "usage: ${Prog} [-0qRA] [dir]" 1>&2; exit 1; }
