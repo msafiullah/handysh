@@ -1,22 +1,44 @@
 handysh
 =======
 
-Introduction
-============
+HandySh (prounced handy sheesh) is a project containing handy Unix shell scripts. 
 
-HandySh (prounced handy sheesh) is a project containing handy UNIX shell scripts.
+These shell scripts utilize the existing Unix utility programs such as ls, rm, find, rmdir, mv, grep, sed, etc, to provide their functionalities. 
 
-Initially, these shell scripts were written for my own use. In order to make these scripts work on all UNIX systems, they are written using the Bourne Shell (/bin/sh) scripting language.
+Some handysh scripts depend on other handysh scripts. In order to make these scripts work on all Unix systems, they are written using the Bourne Shell (/bin/sh) scripting language.
 
-Please help to extend the functionalitites and performance of these scripts, add more handy scripts.
+Please help to extend the functionalitites and performance of these scripts, and add more handy shell scripts.
 
-Note
-====
+Disclaimer
+==========
 
-Scripts with the .sh extention are for testing purposes and are not production ready. They may inflict some serious damage. Use them with caution.
+Files with the .sh suffix are for testing purposes and are not production ready. Please use the handysh scripts with caution. When used improperly, irreversible damages such as deletion of files may occur.
 
 Installation
 ============
 
-1. Download the source codes into a directory of your choice (e.g. bin)
-2. Add this directory to your PATH.
+If you have git installed, you can clone this project to a directory of your choice. (e.g. myhomedir/bin)
+
+1. Open your terminal application.
+2. $ cd ~
+3. $ mkdir bin
+4. $ cd bin
+5. $ git clone https://github.com/msafiullah/handysh.git
+6. $ export PATH=$PATH:$HOME/bin
+7. Quit and reopen your terminal.
+
+Otherwise, you can download a zip file of the project into a directory of your choice. (e.g. myhomedir/bin)
+
+1. Open your terminal application.
+2. $ cd ~
+3. $ mkdir bin
+4. $ cd bin
+5. $ wget https://github.com/msafiullah/handysh/archive/master.zip
+6. $ unzip master.zip
+7. $ mv handysh-master/* bin
+8. $ rm -rf handysh-master
+9. $ rm -rf master.zip
+6. $ export PATH=$PATH:$HOME/bin
+7. $ source ~/.bash_profile
+8. Quit and reopen your terminal.
+
