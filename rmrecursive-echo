@@ -1,0 +1,39 @@
+#!/bin/sh
+
+Prog=`basename $0`
+
+fnUsage() { echo "usage: ${Prog} [-d | -f] name ... | pattern ..." 1>&2; exit 1; }
+
+type=""
+
+while getopts "df" opt; do
+    case "${opt}" in
+        d|f)
+            type=${opt}
+            ;;
+        *)
+            fnUsage
+            ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+if [ $# -eq 0 ]
+	then
+		fnUsage
+fi
+
+for arg in "$@"
+do
+	if [ $type ]
+	then
+		find . -type $type -name "$arg" -exec echo "remove {}" \;
+		#find . -type $type -name "$arg" -print0 | xargs -0 rm -rf 
+	else
+		find . -name "$arg" -exec echo "remove {}" \;
+		#find . -name "$arg" -exec rm -rf "{}" \;
+		#find . -name "$arg" -print0 | xargs -0 rm -rf 
+	fi
+done
+
