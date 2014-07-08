@@ -28,7 +28,8 @@ fi
 array="";
 for e in "${ELEMENTS[@]}"
 do
-  array+="${e}, "
+  # qoute non-numbers and non-floats
+  [[ "${e}" =~ [^0-9\.] ]] && array+="\"${e}\", " || array+="${e}, "
 done
 
 array=${array%, }
