@@ -1,0 +1,13 @@
+opts:
+  - req s start-datetime <start_date> [<start_time>]
+  - req l till <till> ...
+  - req o output-file <output_file>
+  - opt h help
+  - opt - version
+  - req (c card-no <card_no> | t terminal-id <tid> | x trnx-id <trnx_id>)
+  - opt ((f file ^ d dir) ^ (a aaa ^ b bbb))
+args:
+  - req <source_dir>
+  - req <target_dir>
+  - req <multiple_args> ...
+  
