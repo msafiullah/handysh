@@ -25,5 +25,13 @@ then
   fnUsage
 fi
 
-array=`printf "%s, " ${ELEMENTS[@]} | sed 's/, $//'`
+array="";
+for e in "${ELEMENTS[@]}"
+do
+  array+="${e}, "
+done
+
+array=${array%, }
 echo "[$array]"
+
+
