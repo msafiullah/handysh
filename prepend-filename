@@ -1,0 +1,13 @@
+#!/bin/sh
+# prepends filename to each line of the file
+
+Prog=`basename $0`
+
+fnUsage() { echo "usage: ${Prog} file" 1>&2; exit 1; }
+
+if [[ -z "${1}" ]]
+then
+  fnUsage
+fi
+
+awk 'BEGIN {OFS=","} {print FILENAME,$0}' "${1}"
