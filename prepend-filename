@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # prepends filename to each line of the file
 
 Prog=`basename $0`
@@ -10,4 +10,20 @@ then
   fnUsage
 fi
 
+function fnMain() {
 awk 'BEGIN {OFS=","} {print FILENAME,$0}' "${1}"
+}
+
+if [[ -t 0 ]] || [[ $# -gt 0 ]]
+then
+	# read from terminal stdin
+	for arg in "$@"
+	do
+		fnMain "${arg}"
+	done
+else
+	# read from file stdin
+  while read -r line ; do
+		fnMain "${line}"
+  done
+fi
