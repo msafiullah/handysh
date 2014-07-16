@@ -1,18 +1,27 @@
 handysh
 =======
 
-HandySh (prounced handy sheesh) is a project containing handy Unix shell scripts. 
+HandySh (prounced handy sheesh) is a project containing handy Unix/Linux shell scripts. 
 
-These shell scripts utilize the existing Unix utility programs such as ls, rm, find, rmdir, mv, grep, sed, etc, to provide their functionalities. 
+These shell scripts utilize the existing Unix/Linux utility programs such as ls, rm, find, rmdir, mv, grep, sed, etc, to provide their functionalities. 
 
-Some handysh scripts depend on other handysh scripts. In order to make these scripts work on all Unix systems, they are written using the Bourne Shell (/bin/sh) scripting language.
+Some handysh scripts depend on other handysh scripts. 
+
+Languages Used
+==============
+shell script
+bash script
+ruby
+
 
 Please help to extend the functionalitites and performance of these scripts, and add more handy shell scripts.
 
 Disclaimer
 ==========
 
-Files with the .sh suffix are for testing purposes and are not production ready. Please use the handysh scripts with caution. When used improperly, irreversible damages such as deletion of files may occur.
+Please use the handysh scripts with caution. When used improperly, irreversible damages such as deletion of files may occur. Programmer is not liable for any damages caused.
+
+The way the script run on different systems may vary, due to the differences in BSD Unix, GNU Linux, etc.
 
 Installation
 ============
