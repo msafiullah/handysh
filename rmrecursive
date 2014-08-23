@@ -1,15 +1,22 @@
-#!/bin/sh
+#!/bin/bash
 
 Prog=`basename $0`
 
-fnUsage() { echo "usage: ${Prog} [-d | -f] name ... | pattern ..." 1>&2; exit 1; }
+fnUsage() { echo "usage: ${Prog} [-d | -f] [-s size] name ... | pattern ..." 1>&2; exit 1; }
 
 type=""
+size=""
 
-while getopts "df" opt; do
+while getopts "dfs:" opt; do
     case "${opt}" in
         d|f)
-            type=${opt}
+            type=" -type ${opt}"
+            ;;
+        s)
+            size=" -size ${OPTARG}"
+            if [[ -z $size ]]; then
+              fnUsage
+            fi
             ;;
         *)
             fnUsage
@@ -26,14 +33,7 @@ fi
 
 for arg in "$@"
 do
-	if [ $type ]
-	then
-		find . -type $type -name "$arg" -exec echo "remove {}" \;
-		find . -type $type -name "$arg" -print0 | xargs -0 rm -rf 
-	else
-		find . -name "$arg" -exec echo "remove {}" \;
-		#find . -name "$arg" -exec rm -rf "{}" \;
-		find . -name "$arg" -print0 | xargs -0 rm -rf 
-	fi
+		find .${type}${size} -name "$arg" -exec echo "remove {}" \;
+		find .${type}${size} -name "$arg" -print0 | xargs -0 rm -rf 
 done
 
