@@ -34,6 +34,15 @@ fi
 for arg in "$@"
 do
 		find .${type}${size} -name "$arg" -exec echo "remove {}" \;
-		find .${type}${size} -name "$arg" -print0 | xargs -0 rm -rf 
 done
+
+read -p "Continue? (y/n): " -n 1 -r
+echo 
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    for arg in "$@"
+    do
+            find .${type}${size} -name "$arg" -print0 | xargs -0 rm -rf 
+    done
+fi
 
