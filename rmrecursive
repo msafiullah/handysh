@@ -33,7 +33,7 @@ fi
 
 for arg in "$@"
 do
-		find .${type}${size} -name "$arg" -exec echo "remove {}" \;
+		find .${type}${size} -name "$arg" -exec echo "remove {}" \; | grep -E '\.....?$'
 done
 
 read -p "Continue? (y/n): " -n 1 -r
