@@ -1,0 +1,21 @@
+#!/bin/sh
+
+Prog=`basename $0`
+
+fnUsage() { echo "usage: ${Prog} dir" 1>&2; exit 1; }
+
+if [ $# -eq 0 ]
+  then
+    fnUsage
+fi
+
+find "$1" -name "* *" -exec echo "rename {}" \; | grep -E '\.....?$'
+
+read -p "Continue? (y/n): " -n 1 -r
+echo 
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  find "$1" -name "* *" -type d -print0 | xargs -0 rename 's/ /_/g'    # do the directories first
+  find "$1" -name "* *" -type f -print0 | xargs -0 rename 's/ /_/g'
+fi
+
